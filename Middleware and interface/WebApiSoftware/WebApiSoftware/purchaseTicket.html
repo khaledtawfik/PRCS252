@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <script src="Scripts/jquery-3.3.1.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {         
+
+            $('#purchaseTitle').text("Enter payment details for purchasing ticket:");
+            $('#purchaseTitle').css("font-weight", "Bold");
+            $('#purchaseFrom').text("From: " + localStorage.getItem("DepartStation"));
+            $('#purchaseFrom').css("font-weight", "Bold");
+            $('#purchaseTo').text("   To: " + localStorage.getItem("ArriveStation"));
+            $('#purchaseTo').css("font-weight", "Bold");     
+
+            $('#btnPurchaseJourney').click(function () {
+
+                    var postCustomerId = 1;
+                    var postJourneyId = localStorage.getItem("JourneyID");
+                    var postPaymentId = 1;
+                    var seat = Math.floor(Math.random() * 100) + 1;
+                    $.ajax({
+                        type: 'POST',
+                        url: 'api/tickets',
+                        dataType: 'json',
+                        data: { CUSTOMER_ID: postCustomerId, JOURNEY_ID: postJourneyId, PAYMNET_ID: postPaymentId, SEAT: seat },
+                        success: function (response) {
+                            localStorage.setItem("FirstName", $('#firstName').val());
+                            window.location.href = 'viewTicket.html';
+
+                        }
+                    });
+                
+            });
+        });
+    </script>
+    
+    <title></title>
+</head>
+<body>
+    <h1 align="center">Payment details</h1>
+    <form id="myForm2">
+        <label id="purchaseTitle"><b></b></label>
+        <br>
+        <label id="purchaseFrom"><b></b></label><br>
+        <label id="purchaseTo"><b></b></label>
+        <br><br><br>
+        <label for="firstName"><b>First Name:</b></label>
+        <input type="text" id="firstName" name="firstName">
+        <br>
+        <label for="lastName"><b>Last Name:</b></label>
+        <input type="text" id="lastName" name="lastName">
+        <br>
+        <label for="cardNumber"><b>Card Number:</b></label>
+        <input type="text" id="cardNumber" name="cardNumber">
+
+        <br><br><br>
+        <label id="purchaseError"><b></b></label>
+        <br>
+        <input id="btnPurchaseJourney" type="button" value="Purchase" />
+        <br><br><br>
+    </form>
+
+
+</body>
+</html>

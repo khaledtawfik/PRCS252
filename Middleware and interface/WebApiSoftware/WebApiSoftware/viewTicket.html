@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <script src="Scripts/jquery-3.3.1.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var customerName = localStorage.getItem("FirstName")
+            $('#ticketTitle').css("font-weight", "Bold");
+            $('#ticketTitle').text("Congratulation " + customerName + ",  Your ticket has been booked!");            
+        });
+
+    </script>
+    <title></title>
+</head>
+<body>
+    <form id="myForm3">
+        <br><br><br>
+        <label id="ticketTitle"><h></h></label>
+        <br><br><br>
+        <p><a class="navbar-link" href="trainSchedule.html">Book Another Ticket</a></p>
+    </form>
+</body>
+</html>

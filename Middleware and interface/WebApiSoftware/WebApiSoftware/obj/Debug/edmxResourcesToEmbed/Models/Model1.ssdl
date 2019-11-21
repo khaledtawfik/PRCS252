@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Model.Store" Provider="Oracle.ManagedDataAccess.Client" ProviderManifestToken="11.2" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="CUSTOMER">
+    <Key>
+      <PropertyRef Name="CUSTOMER_ID" />
+    </Key>
+    <Property Name="CUSTOMER_ID" Type="number" Precision="38" Scale="0" Nullable="false" />
+    <Property Name="FIRST_NAME" Type="varchar2" MaxLength="20" />
+    <Property Name="LAST_NAME" Type="varchar2" MaxLength="20" />
+    <Property Name="ADDRESS" Type="varchar2" MaxLength="20" />
+    <Property Name="PHONE" Type="number" Precision="38" Scale="0" />
+  </EntityType>
+  <EntityType Name="JOURNEY">
+    <Key>
+      <PropertyRef Name="JOURNEY_ID" />
+    </Key>
+    <Property Name="JOURNEY_ID" Type="number" Precision="38" Scale="0" Nullable="false" />
+    <Property Name="TRAIN_ID" Type="number" Precision="38" Scale="0" />
+    <Property Name="DEPARTURE_STATION_ID" Type="number" Precision="38" Scale="0" />
+    <Property Name="DESTINATION_STATION_ID" Type="number" Precision="38" Scale="0" />
+    <Property Name="DURATION" Type="timestamp" Precision="6" />
+    <Property Name="JOURNEY_DATE" Type="date" />
+    <Property Name="PRICE" Type="number" Precision="38" Scale="0" />
+    <Property Name="PLATFORM_DEPARTURE" Type="number" Precision="38" Scale="0" />
+    <Property Name="DEPARTURE_TIME" Type="timestamp" Precision="6" />
+    <Property Name="ARRIVAL_TIME" Type="timestamp" Precision="6" />
+    <Property Name="PLATFORM_ARRIVAL" Type="number" Precision="38" Scale="0" />
+  </EntityType>
+  <EntityType Name="PAYMENT">
+    <Key>
+      <PropertyRef Name="PAYMENT_ID" />
+    </Key>
+    <Property Name="PAYMENT_ID" Type="number" Precision="38" Scale="0" Nullable="false" />
+    <Property Name="TYPE" Type="varchar2" MaxLength="20" />
+  </EntityType>
+  <EntityType Name="PLATFORM">
+    <Key>
+      <PropertyRef Name="PLATFORM_ID" />
+    </Key>
+    <Property Name="PLATFORM_ID" Type="number" Precision="38" Scale="0" Nullable="false" />
+    <Property Name="DESCRIPTION" Type="varchar2" MaxLength="20" />
+  </EntityType>
+  <EntityType Name="STATION">
+    <Key>
+      <PropertyRef Name="STATION_ID" />
+    </Key>
+    <Property Name="STATION_ID" Type="number" Precision="38" Scale="0" Nullable="false" />
+    <Property Name="STATION_NAME" Type="varchar2" MaxLength="20" />
+    <Property Name="CITY" Type="varchar2" MaxLength="20" />
+  </EntityType>
+  <EntityType Name="TICKET">
+    <Key>
+      <PropertyRef Name="TICKET_ID" />
+    </Key>
+    <Property Name="TICKET_ID" Type="number" Precision="38" Scale="0" Nullable="false" />
+    <Property Name="CUSTOMER_ID" Type="number" Precision="38" Scale="0" />
+    <Property Name="JOURNEY_ID" Type="number" Precision="38" Scale="0" />
+    <Property Name="PAYMNET_ID" Type="number" Precision="38" Scale="0" />
+    <Property Name="SEAT" Type="number" Precision="38" Scale="0" />
+  </EntityType>
+  <EntityType Name="TRAIN">
+    <Key>
+      <PropertyRef Name="TRAIN_ID" />
+    </Key>
+    <Property Name="TRAIN_ID" Type="number" Precision="38" Scale="0" Nullable="false" />
+    <Property Name="MODEL" Type="varchar2" MaxLength="20" />
+  </EntityType>
+  <Association Name="JOURNEY_FK1">
+    <End Role="TRAIN" Type="Self.TRAIN" Multiplicity="0..1" />
+    <End Role="JOURNEY" Type="Self.JOURNEY" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TRAIN">
+        <PropertyRef Name="TRAIN_ID" />
+      </Principal>
+      <Dependent Role="JOURNEY">
+        <PropertyRef Name="TRAIN_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="JOURNEY_FK2">
+    <End Role="PLATFORM" Type="Self.PLATFORM" Multiplicity="1" />
+    <End Role="JOURNEY" Type="Self.JOURNEY" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="PLATFORM">
+        <PropertyRef Name="PLATFORM_ID" />
+      </Principal>
+      <Dependent Role="JOURNEY">
+        <PropertyRef Name="JOURNEY_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="JOURNEY_FK3">
+    <End Role="STATION" Type="Self.STATION" Multiplicity="1" />
+    <End Role="JOURNEY" Type="Self.JOURNEY" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="STATION">
+        <PropertyRef Name="STATION_ID" />
+      </Principal>
+      <Dependent Role="JOURNEY">
+        <PropertyRef Name="JOURNEY_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="TICKET_FK1">
+    <End Role="CUSTOMER" Type="Self.CUSTOMER" Multiplicity="0..1" />
+    <End Role="TICKET" Type="Self.TICKET" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CUSTOMER">
+        <PropertyRef Name="CUSTOMER_ID" />
+      </Principal>
+      <Dependent Role="TICKET">
+        <PropertyRef Name="CUSTOMER_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="TICKET_FK2">
+    <End Role="JOURNEY" Type="Self.JOURNEY" Multiplicity="0..1" />
+    <End Role="TICKET" Type="Self.TICKET" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="JOURNEY">
+        <PropertyRef Name="JOURNEY_ID" />
+      </Principal>
+      <Dependent Role="TICKET">
+        <PropertyRef Name="JOURNEY_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="TICKET_FK3">
+    <End Role="PAYMENT" Type="Self.PAYMENT" Multiplicity="0..1" />
+    <End Role="TICKET" Type="Self.TICKET" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="PAYMENT">
+        <PropertyRef Name="PAYMENT_ID" />
+      </Principal>
+      <Dependent Role="TICKET">
+        <PropertyRef Name="PAYMNET_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="ModelStoreContainer">
+    <EntitySet Name="CUSTOMER" EntityType="Self.CUSTOMER" Schema="TEST" store:Type="Tables" />
+    <EntitySet Name="JOURNEY" EntityType="Self.JOURNEY" Schema="TEST" store:Type="Tables" />
+    <EntitySet Name="PAYMENT" EntityType="Self.PAYMENT" Schema="TEST" store:Type="Tables" />
+    <EntitySet Name="PLATFORM" EntityType="Self.PLATFORM" Schema="TEST" store:Type="Tables" />
+    <EntitySet Name="STATION" EntityType="Self.STATION" Schema="TEST" store:Type="Tables" />
+    <EntitySet Name="TICKET" EntityType="Self.TICKET" Schema="TEST" store:Type="Tables" />
+    <EntitySet Name="TRAIN" EntityType="Self.TRAIN" Schema="TEST" store:Type="Tables" />
+    <AssociationSet Name="JOURNEY_FK1" Association="Self.JOURNEY_FK1">
+      <End Role="TRAIN" EntitySet="TRAIN" />
+      <End Role="JOURNEY" EntitySet="JOURNEY" />
+    </AssociationSet>
+    <AssociationSet Name="JOURNEY_FK2" Association="Self.JOURNEY_FK2">
+      <End Role="PLATFORM" EntitySet="PLATFORM" />
+      <End Role="JOURNEY" EntitySet="JOURNEY" />
+    </AssociationSet>
+    <AssociationSet Name="JOURNEY_FK3" Association="Self.JOURNEY_FK3">
+      <End Role="STATION" EntitySet="STATION" />
+      <End Role="JOURNEY" EntitySet="JOURNEY" />
+    </AssociationSet>
+    <AssociationSet Name="TICKET_FK1" Association="Self.TICKET_FK1">
+      <End Role="CUSTOMER" EntitySet="CUSTOMER" />
+      <End Role="TICKET" EntitySet="TICKET" />
+    </AssociationSet>
+    <AssociationSet Name="TICKET_FK2" Association="Self.TICKET_FK2">
+      <End Role="JOURNEY" EntitySet="JOURNEY" />
+      <End Role="TICKET" EntitySet="TICKET" />
+    </AssociationSet>
+    <AssociationSet Name="TICKET_FK3" Association="Self.TICKET_FK3">
+      <End Role="PAYMENT" EntitySet="PAYMENT" />
+      <End Role="TICKET" EntitySet="TICKET" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

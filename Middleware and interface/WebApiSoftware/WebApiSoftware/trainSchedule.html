@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <script src="Scripts/jquery-3.3.1.js"></script>
+    <script type="text/javascript">
+        
+        $(document).on("click", "button", function (event) {
+            localStorage.setItem("JourneyID", event.target.id);
+            window.location.href = 'purchaseTicket.html';
+        });        
+        $(document).ready(function () {            
+            $.ajax({
+                type: 'GET',
+                url: 'api/stations',
+                dataType: 'json',
+                success: function (response) {
+                    var dropdownFromOptions;
+                    $.each(response, function (index, val) {
+                        dropdownFromOptions += '<option value="' + val.STATION_ID + '">' + val.STATION_NAME + '</option>';
+                        $('#stationsFromDropdown').html(dropdownFromOptions);
+                    });
+                }
+            });
+            $.ajax({
+                type: 'GET',
+                url: 'api/stations',
+                dataType: 'json',
+                success: function (response) {
+                    var dropdownToOptions;
+                    $.each(response, function (index, val) {
+                        dropdownToOptions += '<option value="' + val.STATION_ID + '">' + val.STATION_NAME + '</option>';
+                        $('#stationsToDropdown').html(dropdownToOptions);
+                    });
+                }
+            });
+            $('#btnSearchJourneys').click(function () {
+                $('#ulJourneys').empty();
+                //$('#mydiv').empty();
+                $('#journeyTitle').text("Available journeys ");
+                $('#journeyTitle').css("font-weight", "Bold");
+
+                $('#journeyFrom').text("From: " + $('#stationsFromDropdown option:selected').text());
+                $('#journeyTo').text("   To: " + $('#stationsToDropdown option:selected').text());
+                var departureStationId = $('#stationsFromDropdown option:selected').val();
+                var destinationStationId = $('#stationsToDropdown option:selected').val();
+                var departureTime = $('#departureDate').val();
+
+                $.ajax({
+                    type: 'GET',
+                    url: 'api/journeys',
+                    dataType: 'json',
+                    data: { departure_id: departureStationId, destination_id: destinationStationId, date: departureTime},
+                    success: function (response) {
+                        localStorage.setItem("DepartStation", $('#stationsFromDropdown option:selected').text());
+                        localStorage.setItem("ArriveStation", $('#stationsToDropdown option:selected').text());
+                        if (response.length) {
+                            $.each(response, function (index, val) {
+                                var journeyID = val.JOURNEY_ID;
+                                var journeyNumber = index + 1;
+                                $('#ulJourneys').append('Journey ' + journeyNumber + ":");
+                                $('#ulJourneys').append('<li>' + 'Departure Time: ' + val.DEPARTURE_TIME + '</li>');
+                                $('#ulJourneys').append('<li>' + 'Arrival Time: ' + val.ARRIVAL_TIME + '</li>');
+                                $('#ulJourneys').append('<li>' + 'Departure Platform: ' + val.PLATFORM_DEPARTURE + '</li>');
+                                $('#ulJourneys').append('<li>' + 'Arrival Platform: ' + val.PLATFORM_ARRIVAL + '</li>');
+                                $('#ulJourneys').append('<li>' + 'Price: ' + val.PRICE + '</li><br>');
+                                $('<button id="' + journeyID + '">' + 'Book Journey' + journeyNumber + '</button>').appendTo('body');
+                            });
+                        }
+                        else {
+                            $('#journeyTitle').text("No journeys available ..");
+                            $('#journeyTitle').css("font-weight", "Bold");
+                        }
+                    }
+                });
+            });
+
+            $('#test').click(function () {
+                               
+
+            });
+
+            /*$('#btnSelectJourney').click(function () {
+                localStorage.setItem("JourneyID", 1);
+                window.location.href = 'purchaseTicket.html';
+            });*/
+
+        });
+    </script>
+    <title></title>
+</head>
+<body>
+    <h1 align="center">Book your train ticket</h1>
+    <form id="myForm">
+        <label for="stationsFromDropdown"><b>From Station:</b></label>
+        <select class="form-control" id="stationsFromDropdown" name="stationsFromDropdown"></select>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <label for="stationsToDropdown"><b>To Station:</b></label>
+        <select class="form-control" id="stationsToDropdown" name="stationsToDropdown"></select>
+        <br><br>
+        <label for="departureDate"><b>Departure Date:</b></label>
+        <input type="date" id="departureDate">
+        <br><br><br>
+
+        <!--<input id="test" type="button" value="test" />-->
+
+        <input id="btnSearchJourneys" type="button" value="Search" />
+        <br><br><br>
+    </form>
+
+    <form id="myForm1">
+        <label id="journeyTitle"><b></b></label>
+        <br>
+        <label id="journeyFrom"><b></b></label>
+        <label id="journeyTo"><b></b></label>
+        <label id="journeyErrorMsg"><b></b></label>
+        <br>
+        <div id="mydiv">
+            <ul id="ulJourneys"></ul>
+        </div>
+
+        <br>
+
+        <!--<div id="mydiv" data-role="content">
+    </div>-->
+        <!--<input id="btnSelectJourney" type="button" value="Select Journey" />-->
+    </form>
+
+    </body>
+    </html>
